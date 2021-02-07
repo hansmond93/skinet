@@ -46,6 +46,13 @@ namespace API
             //this is an extension of class of the configure services method
             services.AddApplicationServices();
             services.AddSwaggerDocumnetation();
+            services.AddCors( opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,6 +75,9 @@ namespace API
             app.UseRouting();
 
             app.UseStaticFiles();
+
+            //must be added before Authorisation middleware
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 

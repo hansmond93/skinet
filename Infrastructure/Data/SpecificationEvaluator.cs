@@ -20,6 +20,23 @@ namespace Infrastructure.Data
                 query = query.Where(spec.Criteria);
             }
 
+            if (spec.OrderBy != null)
+            {
+                query = query.OrderBy(spec.OrderBy);
+            }
+
+            if (spec.OrderByDescending != null)
+            {
+                query = query.OrderByDescending(spec.OrderByDescending);
+            }
+
+            //paginag operators need to come after any filtering or sorting operations
+            //example if u paginate before sorting, u wud only be sorting
+            if(spec.IsPagingEnabled)
+            {
+                query = query.Skip(spec.Skip).Take(spec.Take);
+            }
+
             query = spec.Includes.Aggregate(query, (current, include) => current.Include(include)); //Aggregate LINQ is a bit hard to grab
 
             return query;
