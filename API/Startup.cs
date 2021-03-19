@@ -10,6 +10,7 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -44,6 +45,11 @@ namespace API
             services.AddDbContext<StoreContext>(x => 
                 x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
 
+            services.AddDbContext<AppIdentityDbContext>(x =>
+            {
+                x.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+            });
+
             //Redis Config
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
@@ -53,6 +59,7 @@ namespace API
 
             //this is an extension of class of the configure services method
             services.AddApplicationServices();
+            services.AddIdentityServices(_config);
             services.AddSwaggerDocumnetation();
             services.AddCors( opt =>
             {
@@ -86,6 +93,9 @@ namespace API
 
             //must be added before Authorisation middleware
             app.UseCors("CorsPolicy");
+
+            //this must be added before Authorization middleware
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
