@@ -18,6 +18,8 @@ namespace API.Extensions
 
             services.AddScoped<IBasketReposirory, BasketRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<ITokenService, TokenService>();
             //this must be added below services.AddControllers
